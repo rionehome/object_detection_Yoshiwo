@@ -1,3 +1,32 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#使用方法
+"""
+必要ファイル
+libdarknet.soをdarknet.pyと同じディレクトリに配置
+.dataファイルと.namesファイルをプログラム内で指定（オリジナルデータを使う際はまた異なるファイルが必要なのでそのときは声をかけて）
+.cfgファイルと.weight（学習の重みファイル）をプログラム内で指定
+"""
+
+#画像データ
+"""
+data/ディレクトリ
+に認識対象の画像を格納
+USBcameraなどで取得した画像をここに格納
+"""
+#認識結果
+"""
+result/ディレクトリに格納される
+"""
+
+#実行方法
+"""
+python darknet.py
+認識対象画像はプログラム内で指定
+認識結果等もプログラム内で指定 
+"""
+
 from ctypes import *
 import math
 import random
@@ -48,8 +77,10 @@ class METADATA(Structure):
 
     
 
-lib = CDLL("/home/yoshiwo/darknet/libdarknet.so", RTLD_GLOBAL)
-#lib = CDLL("libdarknet.so", RTLD_GLOBAL)
+#lib = CDLL("/home/yoshiwo/darknet/libdarknet.so", RTLD_GLOBAL)
+
+#ここで[libdarknet.so]ファイルを指定しないと動かない"./libdarknet.so"
+lib = CDLL("./libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]
@@ -160,15 +191,32 @@ if __name__ == "__main__":
     #meta = load_meta("cfg/imagenet1k.data")
     #r = classify(net, meta, im)
     #print r[:10]
+    
+    #.cfgファイルを指定
+    #.weightsを指定
     net = load_net("yolov3-tiny.cfg", "yolov3-tiny.weights", 0)
+    
+    #.dataファイルを指定
     meta = load_meta("coco.data")
+    
+    #認識対象の画像を指定
     r = detect(net, meta, "./data/dog.jpg")
     
+    #認識結果を  r  に格納
     print(r)
+    """
+    rは多次元配列
+    例：
+    r[0] = [('car', 0.6152912378311157, (465, 679, 71, 169))]
+    r[0][0] = "car"
+    r[2][0][0] = 465
+    
+    """
     print("---------")
     img = cv2.imread("./data/dog.jpg")
     for i in range(len(r)):
         im2 = img[r[i][2][2]:r[i][2][3], r[i][2][0]:r[i][2][1]]
+        #認識結果をresultディレクトリに指定
         cv2.imwrite("./result/" + str(r[i][0])+".jpg", im2)
     
     
