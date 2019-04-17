@@ -31,7 +31,6 @@ from ctypes import *
 import math
 import random
 import sys
-sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 import cv2
 
 
