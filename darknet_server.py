@@ -3,19 +3,20 @@ import rospy
 from std_srvs.srv import Empty, EmptyResponse
 import os
 
-def service1(req):
+def detectOn(req):
 	rospy.loginfo("ON")
-	os.system("python darknet_python/darknet.py")
+	os.system("rosrun yoshiwo_pivate_lesson darknet.py")
+	os.system("rosservice call /detect_off")
 	return EmptyResponse()
 
-def service2(req):
+def detectOff(req):
 	rospy.loginfo("OFF")
 	return EmptyResponse()
 	
 def server():
 	rospy.init_node("server")
-	s1 = rospy.Service("call_on", Empty, service1)
-	s2 = rospy.Service("call_off", Empty, service2)
+	s1 = rospy.Service("detect_on", Empty, detectOn)
+	s2 = rospy.Service("detect_off", Empty, detectOff)
 	print("waiting")
 	rospy.spin()
 	
