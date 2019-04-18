@@ -79,7 +79,7 @@ class METADATA(Structure):
 #lib = CDLL("/home/yoshiwo/darknet/libdarknet.so", RTLD_GLOBAL)
 
 #ここで[libdarknet.so]ファイルを指定しないと動かない"./libdarknet.so"
-lib = CDLL("./libdarknet.so", RTLD_GLOBAL)
+lib = CDLL("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]
@@ -193,13 +193,13 @@ if __name__ == "__main__":
     
     #.cfgファイルを指定
     #.weightsを指定
-    net = load_net("yolov3-tiny.cfg", "yolov3-tiny.weights", 0)
+    net = load_net("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/yolov3-tiny.cfg", "/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/yolov3-tiny.weights", 0)
     
     #.dataファイルを指定
-    meta = load_meta("coco.data")
+    meta = load_meta("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/coco.data")
     
     #認識対象の画像を指定
-    r = detect(net, meta, "./data/dog.jpg")
+    r = detect(net, meta, "/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/data/dog.jpg")
     
     #認識結果を  r  に格納
     print(r)
@@ -213,11 +213,11 @@ if __name__ == "__main__":
     
     """
     print("---------")
-    img = cv2.imread("./data/dog.jpg")
+    img = cv2.imread("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/data/dog.jpg")
     for i in range(len(r)):
         im2 = img[r[i][2][2]:r[i][2][3], r[i][2][0]:r[i][2][1]]
         #認識結果をresultディレクトリに指定
-        cv2.imwrite("./result/" + str(r[i][0])+".jpg", im2)
+        cv2.imwrite("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/result/" + str(r[i][0])+".jpg", im2)
     
     
 
