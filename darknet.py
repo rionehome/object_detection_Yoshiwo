@@ -27,6 +27,8 @@ python darknet.py
 認識結果等もプログラム内で指定 
 """
 
+#パスは全てフルパスで！！！
+
 from ctypes import *
 import math
 import random
@@ -76,10 +78,11 @@ class METADATA(Structure):
 
     
 
-#lib = CDLL("/home/yoshiwo/darknet/libdarknet.so", RTLD_GLOBAL)
+
 
 #ここで[libdarknet.so]ファイルを指定しないと動かない"./libdarknet.so"
 lib = CDLL("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/libdarknet.so", RTLD_GLOBAL)
+
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]
@@ -174,10 +177,12 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
                 top,bottom = int(b.y-b.h/2.0),int(b.y+b.h/2.0)
                 res.append((meta.names[i], dets[j].prob[i], (left,right,top,bottom)))
     
+    """
     #left, right = int((b.x-b.w/2.0)),int((b.x+b.w/2.0))
     #top,bottom = int(b.y-b.h/2.0),int(b.y+b.h/2.0)
     #print(left,right,top,bottom)
     #top, bottom = 214, 542
+    """
     
     res = sorted(res, key=lambda x: -x[1])
     free_image(im)
@@ -185,21 +190,18 @@ def detect(net, meta, image, thresh=.5, hier_thresh=.5, nms=.45):
     return res
     
 if __name__ == "__main__":
-    #net = load_net("cfg/densenet201.cfg", "/home/pjreddie/trained/densenet201.weights", 0)
-    #im = load_image("data/wolf.jpg", 0, 0)
-    #meta = load_meta("cfg/imagenet1k.data")
-    #r = classify(net, meta, im)
-    #print r[:10]
+    #.cfgファイルを指定.weightsを指定
+    #フルパスで指定しといたほうが良い（カレントディレクトリでrosrunするとファイル情報がカレントディレクトリからになるから）
+    net = load_net("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/cfg/yolov3-tiny.cfg", "/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/weights/yolov3-tiny.weights", 0)
     
-    #.cfgファイルを指定
-    #.weightsを指定
-    net = load_net("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/yolov3-tiny.cfg", "/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/yolov3-tiny.weights", 0)
     
     #.dataファイルを指定
-    meta = load_meta("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/coco.data")
+    meta = load_meta("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/obj_info/coco.data")
+    
     
     #認識対象の画像を指定
     r = detect(net, meta, "/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/data/dog.jpg")
+    
     
     #認識結果を  r  に格納
     print(r)
@@ -218,6 +220,7 @@ if __name__ == "__main__":
         im2 = img[r[i][2][2]:r[i][2][3], r[i][2][0]:r[i][2][1]]
         #認識結果をresultディレクトリに指定
         cv2.imwrite("/home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/result/" + str(r[i][0])+".jpg", im2)
+        
     
     
 

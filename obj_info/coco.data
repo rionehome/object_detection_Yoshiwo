@@ -2,7 +2,8 @@ classes= 80
 train  = /home/pjreddie/data/coco/trainvalno5k.txt
 valid  = coco_testdev
 #valid = data/coco_val_5k.list
-names = /home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/coco.names
+#ここフルパスで.namesを指定
+names = /home/yoshiwo/catkin_ws/src/yoshiwo_pivate_lesson/darknet_python/obj_info/coco.names
 backup = /home/pjreddie/backup/
 eval=coco
 
